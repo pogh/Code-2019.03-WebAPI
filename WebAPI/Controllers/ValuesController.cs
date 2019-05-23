@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using WebAPI.Models;
+using Newtonsoft.Json;
 using WebAPI.Services;
 
 namespace WebAPI.Controllers
@@ -21,18 +18,28 @@ namespace WebAPI.Controllers
 
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public ActionResult<string> Get()
         {
-            return new string[] { _people.EveryOne.Last().ToString() };
+            return JsonConvert.SerializeObject(_people.EveryOne);
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
         public ActionResult<string> Get(int id)
         {
-            return "value";
+            try
+            {
+                return JsonConvert.SerializeObject(
+                    _people.EveryOne.Where(x => x.Id == id
+                    ));
+            }
+            catch
+            {
+                return new NotFoundResult();
+            }
         }
 
+        /*
         // POST api/values
         [HttpPost]
         public void Post([FromBody] string value)
@@ -50,5 +57,6 @@ namespace WebAPI.Controllers
         public void Delete(int id)
         {
         }
+        */
     }
 }
